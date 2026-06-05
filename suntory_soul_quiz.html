@@ -405,6 +405,11 @@
     </div>
     <p class="hint" style="margin-top:-10px;margin-bottom:16px">手機號碼僅供後續保健諮詢使用，不會外流</p>
 
+    <div class="field">
+      <label>電子信箱 <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="example@gmail.com">
+    </div>
+
     <!-- 毛孩資料 -->
     <div class="sec-label">毛孩資料</div>
 
@@ -675,7 +680,7 @@ function pick(el, qName, val) {
 }
 
 function updateProgress() {
-  const fields = ['parentName','phone','petName','petType','petAge'];
+  const fields = ['parentName','phone','email','petName','petType','petAge'];
   const filledFields = fields.filter(id => document.getElementById(id).value.trim() !== '').length;
   const filledQ = Object.values(answers).filter(v => v !== null).length;
   const total = fields.length + 5;
@@ -685,7 +690,7 @@ function updateProgress() {
   document.getElementById('progressLabel').textContent = done + ' / ' + total;
 }
 
-['parentName','phone','petName','petType','petAge'].forEach(id => {
+['parentName','phone','email','petName','petType','petAge'].forEach(id => {
   document.getElementById(id).addEventListener('input', updateProgress);
   document.getElementById(id).addEventListener('change', updateProgress);
 });
@@ -739,12 +744,17 @@ async function submitQuiz() {
   // 驗證必填
   const parentName = document.getElementById('parentName').value.trim();
   const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
   const petName = document.getElementById('petName').value.trim();
   const petType = document.getElementById('petType').value;
   const petAge = document.getElementById('petAge').value;
 
-  if (!parentName || !phone || !petName || !petType || !petAge) {
+  if (!parentName || !phone || !email || !petName || !petType || !petAge) {
     alert('請填寫所有必填欄位（標有 * 的項目）');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('請輸入正確的電子信箱格式');
     return;
   }
   const unanswered = Object.values(answers).filter(v => v === null).length;
@@ -764,6 +774,7 @@ async function submitQuiz() {
     timestamp: new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }),
     parentName,
     phone,
+    email,
     petName,
     petType,
     petAge,
@@ -825,7 +836,7 @@ function resetQuiz() {
   Object.keys(answers).forEach(k => answers[k] = null);
   document.querySelectorAll('.opt-label').forEach(el => el.classList.remove('selected'));
   document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
-  ['parentName','phone','petName','breed'].forEach(id => document.getElementById(id).value = '');
+  ['parentName','phone','email','petName','breed'].forEach(id => document.getElementById(id).value = '');
   ['petType','petAge','supplement'].forEach(id => document.getElementById(id).selectedIndex = 0);
   updateProgress();
   document.getElementById('resultPage').style.display = 'none';
