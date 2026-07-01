@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>你家毛孩現在最需要什麼？｜三得利毛孩系列 × 2026 展昭台北寵物用品展</title>
+<title>你家毛孩是哪種靈魂？｜三得利毛孩系列 × 2026 展昭台北寵物用品展</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -237,6 +237,19 @@
       </div>
     </div>
 
+    <div class="marketing-consent" style="margin-bottom:20px;">
+      <div class="consent-title">行銷資訊接收意願 <span class="req">*</span></div>
+      <label class="consent-opt" id="consentYes" onclick="pickConsent('yes')">
+        <input type="radio" name="consent" value="yes">
+        <span>我同意接收 SUNTORY WELLNESS 後續優惠、活動及保健相關資訊。</span>
+      </label>
+      <label class="consent-opt" id="consentNo" onclick="pickConsent('no')">
+        <input type="radio" name="consent" value="no">
+        <span>我不同意接收相關行銷資訊。</span>
+      </label>
+      <div style="font-size:11px;color:var(--text-hint);line-height:1.7;margin-top:10px;">您所提供之個人資料，將由 SUNTORY WELLNESS 於蒐集目的範圍內，作為本活動聯繫、優惠資訊通知、顧客關係維護、保健諮詢及行銷服務之用。相關資料將依個人資料保護法妥善保存與管理，除法令另有規定或執行本活動必要之委託合作單位外，不會任意提供予無關第三方使用。您可隨時要求停止接收行銷訊息。</div>
+    </div>
+
     <div class="btn-wrap">
       <button class="btn-primary" onclick="submitQuiz()">你家毛孩需要這個… →</button>
       <p class="notice">送出後即可查看結果，資料僅供三得利毛孩系列活動使用</p>
@@ -269,26 +282,7 @@
 
 
 
-    <div class="marketing-consent">
-      <div class="consent-title">行銷資訊接收意願 <span class="req">*</span></div>
-      <label class="consent-opt" id="consentYes" onclick="pickConsent('yes')">
-        <input type="radio" name="consent" value="yes">
-        <span> 我同意接收 SUNTORY WELLNESS 後續優惠、活動及保健相關資訊。</span>
-      </label>
-      <label class="consent-opt" id="consentNo" onclick="pickConsent('no')">
-        <input type="radio" name="consent" value="no">
-        <span> 我不同意接收相關行銷資訊。</span>
-      </label>
-      <div class="privacy-notice">您所提供之個人資料，將由 SUNTORY WELLNESS 於蒐集目的範圍內，作為本活動聯繫、優惠資訊通知、顧客關係維護、保健諮詢及行銷服務之用。相關資料將依個人資料保護法妥善保存與管理，除法令另有規定或執行本活動必要之委託合作單位外，不會任意提供予無關第三方使用。您可隨時要求停止接收行銷訊息。</div>
-    </div>
-
-    <button class="btn-secondary" onclick="resetQuiz()">完成送出</button>
-
-    <div style="margin-top:16px;border-top:1px dashed #E7E5E4;padding-top:20px;text-align:center;">
-      <div style="font-size:11px;color:#A8A29E;letter-spacing:1px;margin-bottom:10px;">── 工作人員專用 ──</div>
-      <button onclick="staffReset()" style="padding:12px 28px;background:#1C1917;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;">🔄 重置問卷（下一位客人）</button>
-      <div style="font-size:11px;color:#A8A29E;margin-top:8px;">按下後返回首頁，讓下一位客人填寫</div>
-    </div>
+    <div class="privacy-notice" style="font-size:11px;color:#A8A29E;line-height:1.7;margin-top:8px;padding:16px;background:#fff;border-radius:12px;border:1px solid var(--border);">您所提供之個人資料，將由 SUNTORY WELLNESS 於蒐集目的範圍內，作為本活動聯繫、優惠資訊通知、顧客關係維護、保健諮詢及行銷服務之用。相關資料將依個人資料保護法妥善保存與管理，除法令另有規定或執行本活動必要之委託合作單位外，不會任意提供予無關第三方使用。您可隨時要求停止接收行銷訊息。</div>
   </div>
 </div>
 
@@ -383,6 +377,9 @@ async function submitQuiz() {
   if (unanswered > 0) {
     alert(`還有 ${unanswered} 題測驗題目尚未作答，請全部選完再送出！`); return;
   }
+  if (!consentValue) {
+    alert('請選擇是否同意接收行銷資訊'); return;
+  }
 
   const winner = calcWinner();
   const r = results[winner];
@@ -395,7 +392,8 @@ async function submitQuiz() {
     breed: document.getElementById('breed').value.trim(),
     supplement: document.getElementById('supplement').value,
     q1: answers.q1, q2: answers.q2, q3: answers.q3, q4: answers.q4, q5: answers.q5,
-    result: r.badge
+    result: r.badge,
+    consent: consentValue === 'yes' ? '同意接收行銷資訊' : consentValue === 'no' ? '不同意接收行銷資訊' : '未填寫'
   };
 
   try {
